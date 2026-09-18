@@ -1,0 +1,55 @@
+@model ProjectDetailViewModel
+@{
+    var slug = Model.Project.Slug;
+}
+
+<section class="comments" id="comments">
+    <h2>Comments (@Model.Comments.Count)</h2>
+
+    @if (TempData["CommentPosted"] is string flash)
+    {
+        <p class="notice" role="status">@flash</p>
+    }
+
+    <form class="comment-form" asp-controller="Projects" asp-action="Comment" asp-route-id="@slug" method="post">
+        <div class="field">
+            <label asp-for="NewComment.Author"></label>
+            <input asp-for="NewComment.Author" maxlength="40" placeholder="Who is writing?" />
+            <span class="error" asp-validation-for="NewComment.Author"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="NewComment.Body"></label>
+            <textarea asp-for="NewComment.Body" maxlength="600"
+                      placeholder="Feedback, a question, or something you would do differently."></textarea>
+            <span class="error" asp-validation-for="NewComment.Body"></span>
+        </div>
+
+        <button type="submit" class="btn">Post comment</button>
+    </form>
+
+    @if (Model.Comments.Count == 0)
+    {
+        <p class="empty">No comments on this project yet. Be the first to leave one.</p>
+    }
+    else
+    {
+        foreach (var comment in Model.Comments)
+        {
+            <article class="comment">
+                <div class="comment__head">
+                    <span class="comment__author">@comment.Author</span>
+                    <time class="comment__time" datetime="@comment.PostedAt.ToString("o")">
+                        @comment.PostedAt.ToLocalTime().ToString("d MMM yyyy, h:mm tt")
+                    </time>
+                    <span class="u-spacer"></span>
+                    <form asp-controller="Projects" asp-action="DeleteComment" asp-route-id="@slug" method="post">
+                        <input type="hidden" name="commentId" value="@comment.Id" />
+                        <button type="submit" class="btn btn--link">Delete</button>
+                    </form>
+                </div>
+                <p class="comment__body">@comment.Body</p>
+            </article>
+        }
+    }
+</section>

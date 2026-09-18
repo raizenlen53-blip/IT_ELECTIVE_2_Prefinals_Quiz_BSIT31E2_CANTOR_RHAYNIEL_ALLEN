@@ -1,0 +1,16 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<div class="shell shell--single">
+    <div class="detail">
+        <h1>Something went wrong</h1>
+        <p class="page-intro">@Model.Message Go back to the table of contents and try again.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p class="hint">Request ID: @Model.RequestId</p>
+        }
+        <a class="btn" asp-controller="Projects" asp-action="Index">Back to contents</a>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+@model ProjectDetailViewModel
+@{
+    ViewData["Title"] = Model.Project.Title;
+    var p = Model.Project;
+}
+
+<div class="shell shell--single">
+    <article class="detail">
+        <p class="crumb">
+            <a asp-action="Index">Contents</a> &nbsp;/&nbsp; @p.Term &nbsp;/&nbsp; @p.Title
+        </p>
+
+        <h1>@p.Title</h1>
+        <div class="meta">
+            <span class="tag tag--role">@p.Role</span>
+            <span class="tag">@p.Course</span>
+            @foreach (var tech in p.Tech)
+            {
+                <span class="tag">@tech</span>
+            }
+        </div>
+
+        <figure class="detail__hero">
+            <img src="@p.Thumbnail" width="1088" height="680" alt="Screenshot of @p.Title" />
+        </figure>
+
+        <div class="detail__body">
+            <p>@p.Description</p>
+
+            <h3>What it covers</h3>
+            <ul class="checks">
+                @foreach (var highlight in p.Highlights)
+                {
+                    <li>@highlight</li>
+                }
+            </ul>
+
+            <a class="repo" href="@p.RepositoryUrl" target="_blank" rel="noopener noreferrer">
+                <b>Repository &middot; @p.RepositoryOwner</b>
+                @p.RepositoryUrl
+            </a>
+        </div>
+
+        @await Html.PartialAsync("_Comments", Model)
+
+        <nav class="pager" aria-label="Project navigation">
+            @if (Model.Previous is not null)
+            {
+                <a asp-action="Details" asp-route-id="@Model.Previous.Slug">
+                    Previous: @Model.Previous.Title
+                </a>
+            }
+            else { <span></span> }
+
+            @if (Model.Next is not null)
+            {
+                <a asp-action="Details" asp-route-id="@Model.Next.Slug" class="u-right">
+                    Next: @Model.Next.Title
+                </a>
+            }
+            else { <span></span> }
+        </nav>
+    </article>
+</div>

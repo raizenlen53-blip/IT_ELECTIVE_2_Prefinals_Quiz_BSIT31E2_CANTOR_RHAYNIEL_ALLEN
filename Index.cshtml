@@ -1,0 +1,86 @@
+@model ContentsViewModel
+@{
+    ViewData["Title"] = "Contents";
+}
+
+<div class="shell">
+    <nav class="rail" aria-label="Table of contents">
+        <h2>Jump to a term</h2>
+        <ol>
+            @foreach (var term in Model.Terms)
+            {
+                <li>
+                    <a class="rail__link" href="#@term.Term.ToLowerInvariant()">
+                        <b>@term.Term</b>
+                        <span>@term.Projects.Count</span>
+                    </a>
+                </li>
+            }
+        </ol>
+
+        <h2>Find a project</h2>
+        <form asp-action="Index" method="get" class="searchbar" role="search">
+            <div class="field field--flush">
+                <label class="visually-hidden" for="q">Search projects</label>
+                <input type="search" id="q" name="q" value="@Model.Query" placeholder="Razor, group, quiz..." />
+            </div>
+            <button type="submit" class="btn btn--outline">Search</button>
+        </form>
+        @if (!string.IsNullOrWhiteSpace(Model.Query))
+        {
+            <p class="hint u-note">
+                Filtered by &ldquo;@Model.Query&rdquo;. <a asp-action="Index">Clear</a>
+            </p>
+        }
+    </nav>
+
+    <div>
+        <h1 class="page-title">Contents</h1>
+        <p class="page-intro">
+            @Model.TotalProjects repositories from IT Elective 2, in the order they were built.
+            Open any project for the full write-up, the repository link and its comments.
+        </p>
+
+        @if (Model.Terms.Count == 0)
+        {
+            <p class="empty">
+                Nothing matches that search. <a asp-action="Index">Show every project</a>.
+            </p>
+        }
+
+        @foreach (var term in Model.Terms)
+        {
+            <section class="term" id="@term.Term.ToLowerInvariant()">
+                <div class="term__head">
+                    <h2>@term.Term</h2>
+                    <span>@term.Projects.Count project@(term.Projects.Count == 1 ? "" : "s")</span>
+                </div>
+                <p class="term__blurb">@term.Blurb</p>
+
+                @foreach (var project in term.Projects)
+                {
+                    var count = Model.CommentCounts.TryGetValue(project.Slug, out var c) ? c : 0;
+                    <a class="entry" asp-action="Details" asp-route-id="@project.Slug">
+                        <img class="entry__thumb" src="@project.Thumbnail" width="272" height="170"
+                             alt="Thumbnail for @project.Title" loading="lazy" />
+                        <div>
+                            <div class="entry__title">@project.Title</div>
+                            <p class="entry__summary">@project.Summary</p>
+                            <div class="meta">
+                                <span class="tag tag--role">@project.Role</span>
+                                @foreach (var tech in project.Tech)
+                                {
+                                    <span class="tag">@tech</span>
+                                }
+                                @if (count > 0)
+                                {
+                                    <span class="tag tag--count">@count comment@(count == 1 ? "" : "s")</span>
+                                }
+                            </div>
+                        </div>
+                    </a>
+                }
+            </section>
+        }
+    </div>
+</div>

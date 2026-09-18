@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Ma. Corolla Esguerra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" href="~/img/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <header class="sitehead">
+            <div class="sitehead__inner">
+                <a class="sitehead__name" asp-controller="Projects" asp-action="Index">
+                    Ma. Corolla Esguerra
+                    <span>BSIT 31E3 &middot; IT Elective 2 portfolio</span>
+                </a>
+                <div class="sitehead__spacer"></div>
+                <span class="sitehead__user">Signed in as @User.Identity?.Name</span>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn--ghost">Sign out</button>
+                </form>
+            </div>
+        </header>
+    }
+
+    <main id="main">
+        @RenderBody()
+    </main>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <footer class="sitefoot">
+            Coursework portfolio &middot; built with ASP.NET Core MVC &middot; @DateTime.Now.Year
+        </footer>
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

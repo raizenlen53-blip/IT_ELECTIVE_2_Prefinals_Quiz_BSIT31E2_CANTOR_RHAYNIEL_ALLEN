@@ -1,0 +1,68 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<div class="landing">
+    <section class="landing__pitch">
+        <h1>Fifteen builds, <em>one term</em> of IT Elective 2.</h1>
+        <p>
+            A portfolio of coursework for BSIT 31E3 - prelim activities through to the
+            prefinals group project, each with its repository and a place to comment.
+        </p>
+
+        <div class="landing__terms">
+            <div><strong>7</strong><span>prelim</span></div>
+            <div><strong>5</strong><span>midterm</span></div>
+            <div><strong>3</strong><span>prefinals</span></div>
+        </div>
+    </section>
+
+    <section class="landing__gate">
+        <div class="gate">
+            <h2>Sign in</h2>
+            <p>Use the account recorded in the README.</p>
+
+            <form asp-controller="Account" asp-action="Login" method="post" autocomplete="off">
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                @{ var formErrors = ViewData.ModelState[string.Empty]; }
+                @if (formErrors is not null && formErrors.Errors.Count > 0)
+                {
+                    <div class="summary" role="alert">
+                        <ul>
+                            @foreach (var error in formErrors.Errors)
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div class="field">
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" autocomplete="username" autofocus />
+                    <span class="error" asp-validation-for="Username"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" autocomplete="current-password" />
+                    <span class="error" asp-validation-for="Password"></span>
+                </div>
+
+                <div class="field field--check">
+                    <input asp-for="RememberMe" type="checkbox" />
+                    <label asp-for="RememberMe"></label>
+                </div>
+
+                <button type="submit" class="btn btn--block">Sign in</button>
+            </form>
+
+            <div class="creds">
+                Username <code>admin</code> &middot; password <code>Portfolio@@2026</code>.
+                Five wrong attempts locks the form for five minutes.
+            </div>
+        </div>
+    </section>
+</div>
